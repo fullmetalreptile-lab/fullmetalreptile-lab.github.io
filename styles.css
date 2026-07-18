@@ -280,22 +280,23 @@ footer p {
 }
 
 @media (max-width: 768px) {
-  header {
-    flex-direction: column;
-    height: auto;
-    padding: 10px 12px;
-    gap: 4px;
-  }
-  .nav-left, .nav-right {
-    flex: none;
-    width: 100%;
-    justify-content: center;
-    gap: 16px;
-  }
-  .nav-right { justify-content: center; }
-  .nav-left a, .nav-right a { font-size: 12px; letter-spacing: 0.5px; }
-  .logo { height: 60px; left: auto; }
   .floor { padding: 80px 20px; }
   .nav-right a span { display: none; }
-  .nav-right i, .nav-right svg { font-size: 16px; margin: 0; }
 }
+html.mobile header {
+  flex-direction: column;
+  height: auto;
+  padding: 10px 12px;
+  gap: 4px;
+}
+html.mobile .nav-left, html.mobile .nav-right {
+  flex: none;
+  width: 100%;
+  justify-content: center;
+  gap: 16px;
+}
+html.mobile .nav-right { justify-content: center; }
+html.mobile .nav-left a, html.mobile .nav-right a { font-size: 12px; letter-spacing: 0.5px; }
+html.mobile .logo { height: 60px; left: auto; }
+html.mobile .nav-right a span { display: none; }
+html.mobile .nav-right i, html.mobile .nav-right svg { font-size: 16px; margin: 0; }
