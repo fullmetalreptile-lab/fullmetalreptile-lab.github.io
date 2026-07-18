@@ -106,7 +106,7 @@ header::after {
   filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.3));
 }
 
-.nav-right i { font-size: 18px; margin-right: 4px; }
+.nav-right i, .nav-right svg { font-size: 18px; margin-right: 4px; }
 
 .hero {
   height: 100vh;
