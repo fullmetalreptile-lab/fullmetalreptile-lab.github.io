@@ -59,34 +59,38 @@ header::after {
   transition: color 0.2s;
   position: relative;
   display: inline-block;
+  z-index: 0;
 }
-[data-text]::before {
-  content: attr(data-text);
+[data-track]::after {
+  content: '';
   position: absolute;
-  inset: 0;
-  color: transparent;
-  -webkit-text-stroke: 2.5px #00d4ff;
-  paint-order: stroke;
-  -webkit-mask-image: repeating-linear-gradient(
-    90deg,
-    #000 0px, #000 10px,
-    transparent 10px, transparent 20px
+  inset: -8px;
+  border-radius: 12px;
+  background: conic-gradient(from 0deg,
+    #00d4ff 0deg, #00d4ff 40deg,
+    transparent 40deg, transparent 80deg,
+    #00d4ff 80deg, #00d4ff 120deg,
+    transparent 120deg, transparent 160deg,
+    #00d4ff 160deg, #00d4ff 200deg,
+    transparent 200deg, transparent 240deg,
+    #00d4ff 240deg, #00d4ff 280deg,
+    transparent 280deg, transparent 320deg,
+    #00d4ff 320deg, #00d4ff 360deg
   );
-  -webkit-mask-size: 40px 100%;
-  mask-image: repeating-linear-gradient(
-    90deg,
-    #000 0px, #000 10px,
-    transparent 10px, transparent 20px
-  );
-  mask-size: 40px 100%;
-  animation: track-move 0.8s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  padding: 3px;
+  animation: spin 1s linear infinite;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.2s;
-  white-space: nowrap;
+  z-index: -1;
 }
-[data-text]:hover::before { opacity: 1; }
-[data-text]:hover { color: #00d4ff; }
+@keyframes spin { to { transform: rotate(360deg); } }
+[data-track]:hover::after { opacity: 1; }
+[data-track]:hover { color: #00d4ff; }
 
 .dropdown { position: relative; }
 .dropdown-menu {
