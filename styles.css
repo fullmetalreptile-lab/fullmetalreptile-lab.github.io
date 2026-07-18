@@ -15,7 +15,7 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 0 40px;
-  height: 70px;
+  height: 140px;
   background: rgba(10, 10, 10, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(0, 212, 255, 0.15);
@@ -28,7 +28,9 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
   align-items: center;
   gap: 24px;
   list-style: none;
+  flex: 1;
 }
+.nav-right { justify-content: flex-end; }
 .nav-left a, .nav-right a {
   color: #ccc;
   text-decoration: none;
@@ -71,7 +73,7 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
 .dropdown-menu a:hover { background: rgba(0, 212, 255, 0.08); }
 
 .logo {
-  height: 50px;
+  height: 90px;
   width: auto;
   display: block;
 }
@@ -259,10 +261,10 @@ footer p {
 }
 
 @media (max-width: 768px) {
-  header { padding: 0 16px; }
+  header { padding: 0 16px; height: 100px; }
   .nav-left, .nav-right { gap: 12px; }
   .nav-left a, .nav-right a { font-size: 12px; letter-spacing: 0.5px; }
-  .logo { height: 36px; }
+  .logo { height: 60px; }
   .floor { padding: 80px 20px; }
   .nav-right a span { display: none; }
   .nav-right i { font-size: 16px; margin: 0; }
