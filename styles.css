@@ -206,6 +206,33 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
   margin-top: 24px;
 }
 
+.game-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 32px;
+}
+.game-item {
+  display: inline-block;
+  padding: 14px 28px;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  color: #00d4ff;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.25s ease;
+  background: rgba(0, 212, 255, 0.04);
+}
+.game-item:hover {
+  background: rgba(0, 212, 255, 0.12);
+  border-color: #00d4ff;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+  transform: translateY(-2px);
+}
+
 footer {
   padding: 60px 40px 30px;
   text-align: center;
