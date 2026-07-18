@@ -15,7 +15,7 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 0 40px;
-  height: 140px;
+  height: 200px;
   background: rgba(10, 10, 10, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(0, 212, 255, 0.15);
@@ -73,9 +73,11 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
 .dropdown-menu a:hover { background: rgba(0, 212, 255, 0.08); }
 
 .logo {
-  height: 90px;
+  height: 120px;
   width: auto;
   display: block;
+  position: relative;
+  left: -30px;
 }
 
 .hero-logo {
@@ -261,10 +263,10 @@ footer p {
 }
 
 @media (max-width: 768px) {
-  header { padding: 0 16px; height: 100px; }
+  header { padding: 0 16px; height: 120px; }
   .nav-left, .nav-right { gap: 12px; }
   .nav-left a, .nav-right a { font-size: 12px; letter-spacing: 0.5px; }
-  .logo { height: 60px; }
+  .logo { height: 70px; left: -15px; }
   .floor { padding: 80px 20px; }
   .nav-right a span { display: none; }
   .nav-right i { font-size: 16px; margin: 0; }
