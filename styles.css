@@ -56,41 +56,9 @@ header::after {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1px;
-  transition: color 0.2s;
-  position: relative;
-  display: inline-block;
-  z-index: 0;
+  transition: color 0.2s, text-shadow 0.2s;
 }
-[data-track]::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border-radius: 12px;
-  background: conic-gradient(from 0deg,
-    #00d4ff 0deg, #00d4ff 40deg,
-    transparent 40deg, transparent 80deg,
-    #00d4ff 80deg, #00d4ff 120deg,
-    transparent 120deg, transparent 160deg,
-    #00d4ff 160deg, #00d4ff 200deg,
-    transparent 200deg, transparent 240deg,
-    #00d4ff 240deg, #00d4ff 280deg,
-    transparent 280deg, transparent 320deg,
-    #00d4ff 320deg, #00d4ff 360deg
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  padding: 3px;
-  animation: spin 1s linear infinite;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-  z-index: -1;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-[data-track]:hover::after { opacity: 1; }
-[data-track]:hover { color: #00d4ff; }
+.nav-left a:hover, .nav-right a:hover { color: #00d4ff; text-shadow: 0 0 12px rgba(0, 212, 255, 0.5); }
 
 .dropdown { position: relative; }
 .dropdown-menu {
@@ -278,11 +246,13 @@ header::after {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, box-shadow 0.25s;
   background: rgba(0, 212, 255, 0.04);
-  position: relative;
 }
-.game-item:hover { border-color: #00d4ff; }
+.game-item:hover {
+  border-color: #00d4ff;
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.2), inset 0 0 15px rgba(0, 212, 255, 0.05);
+}
 
 footer {
   padding: 60px 40px 30px;
