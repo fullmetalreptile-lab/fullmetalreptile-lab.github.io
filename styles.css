@@ -3,7 +3,7 @@ html { scroll-behavior: smooth; }
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   background: #0a0a0a;
-  color: #fff;
+  color: #6699cc;
   overflow-x: hidden;
 }
 
@@ -23,6 +23,24 @@ header {
 }
 header.scrolled { background: rgba(10, 10, 10, 0.95); }
 
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(90deg,
+    #00d4ff 0px, #00d4ff 15px,
+    transparent 15px, transparent 25px
+  );
+  background-size: 50px 100%;
+  animation: track-move 0.8s linear infinite;
+  z-index: 1001;
+}
+@keyframes track-move {
+  0% { background-position: 0 0; }
+  100% { background-position: 50px 0; }
+}
+
 .nav-left, .nav-right {
   display: flex;
   align-items: center;
@@ -32,15 +50,34 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
 }
 .nav-right { justify-content: flex-end; }
 .nav-left a, .nav-right a {
-  color: #ccc;
+  color: #4d88bb;
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: color 0.2s;
+  position: relative;
 }
 .nav-left a:hover, .nav-right a:hover { color: #00d4ff; }
+
+.nav-left a::after, .nav-right a::after {
+  content: '';
+  position: absolute;
+  inset: -6px -8px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg,
+    #00d4ff 0px, #00d4ff 8px,
+    transparent 8px, transparent 16px
+  );
+  background-size: 32px 100%;
+  animation: track-move 0.6s linear infinite;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  z-index: -1;
+}
+.nav-left a:hover::after, .nav-right a:hover::after { opacity: 1; }
 
 .dropdown { position: relative; }
 .dropdown-menu {
@@ -63,6 +100,23 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
   visibility: visible;
   transform: translateY(0);
 }
+.dropdown-menu::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 10px;
+  background: repeating-linear-gradient(90deg,
+    #00d4ff 0px, #00d4ff 8px,
+    transparent 8px, transparent 16px
+  );
+  background-size: 32px 100%;
+  animation: track-move 0.6s linear infinite;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+  z-index: -1;
+}
+.dropdown:hover .dropdown-menu::after { opacity: 1; }
 .dropdown-menu a {
   display: block;
   padding: 10px 20px;
@@ -131,7 +185,7 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
 .hero p {
   margin-top: 20px;
   font-size: 18px;
-  color: #888;
+  color: #4d88bb;
   letter-spacing: 4px;
   text-transform: uppercase;
 }
@@ -140,7 +194,7 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
   bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
-  color: #555;
+  color: #4d88bb;
   font-size: 13px;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -196,11 +250,12 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
   margin-bottom: 20px;
   text-transform: uppercase;
   letter-spacing: 2px;
+  color: #6699cc;
 }
 .floor p {
   font-size: 16px;
   line-height: 1.8;
-  color: #999;
+  color: #5588aa;
   max-width: 640px;
 }
 .floor .accent-line {
@@ -229,7 +284,25 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
   letter-spacing: 1px;
   transition: all 0.25s ease;
   background: rgba(0, 212, 255, 0.04);
+  position: relative;
 }
+.game-item::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 10px;
+  background: repeating-linear-gradient(90deg,
+    #00d4ff 0px, #00d4ff 8px,
+    transparent 8px, transparent 16px
+  );
+  background-size: 32px 100%;
+  animation: track-move 0.6s linear infinite;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+  z-index: -1;
+}
+.game-item:hover::after { opacity: 1; }
 .game-item:hover {
   background: rgba(0, 212, 255, 0.12);
   border-color: #00d4ff;
@@ -251,13 +324,31 @@ footer {
   list-style: none;
 }
 .footer-links a {
-  color: #666;
+  color: #4d88bb;
   font-size: 22px;
   transition: color 0.2s;
+  position: relative;
 }
+.footer-links a::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 6px;
+  background: repeating-linear-gradient(90deg,
+    #00d4ff 0px, #00d4ff 6px,
+    transparent 6px, transparent 12px
+  );
+  background-size: 24px 100%;
+  animation: track-move 0.5s linear infinite;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  z-index: -1;
+}
+.footer-links a:hover::after { opacity: 1; }
 .footer-links a:hover { color: #00d4ff; }
 footer p {
-  color: #444;
+  color: #4d88bb;
   font-size: 13px;
   letter-spacing: 1px;
 }
