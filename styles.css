@@ -71,14 +71,17 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
 .dropdown-menu a:hover { background: rgba(0, 212, 255, 0.08); }
 
 .logo {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  background: linear-gradient(135deg, #00d4ff, #0088ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: none;
+  height: 50px;
+  width: auto;
+  display: block;
+}
+
+.hero-logo {
+  max-width: min(80vw, 500px);
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.3));
 }
 
 .nav-right i { font-size: 18px; margin-right: 4px; }
@@ -105,36 +108,21 @@ header.scrolled { background: rgba(10, 10, 10, 0.95); }
     repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 212, 255, 0.015) 2px, rgba(0, 212, 255, 0.015) 3px);
   pointer-events: none;
 }
-.hero-content { z-index: 1; }
+.hero-content { z-index: 1; text-align: center; }
 .hero-content::before {
   content: '';
   position: absolute;
   top: 50%; left: 50%;
-  width: 400px; height: 400px;
+  width: 500px; height: 500px;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
   animation: pulse-ring 3s ease-in-out infinite;
   pointer-events: none;
 }
 @keyframes pulse-ring {
   0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
   50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
-}
-.hero h1 {
-  font-size: clamp(48px, 10vw, 120px);
-  font-weight: 900;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  background: linear-gradient(135deg, #00d4ff, #0088ff, #00d4ff);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 4s linear infinite;
-}
-@keyframes shimmer {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
 }
 .hero p {
   margin-top: 20px;
@@ -247,7 +235,7 @@ footer p {
   header { padding: 0 16px; }
   .nav-left, .nav-right { gap: 12px; }
   .nav-left a, .nav-right a { font-size: 12px; letter-spacing: 0.5px; }
-  .logo { font-size: 16px; letter-spacing: 1px; }
+  .logo { height: 36px; }
   .floor { padding: 80px 20px; }
   .nav-right a span { display: none; }
   .nav-right i { font-size: 16px; margin: 0; }
