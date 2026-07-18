@@ -57,27 +57,8 @@ header::after {
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: color 0.2s;
-  position: relative;
 }
-.nav-left a:hover, .nav-right a:hover { color: #00d4ff; }
-
-.nav-left a::after, .nav-right a::after {
-  content: '';
-  position: absolute;
-  inset: -6px -8px;
-  border-radius: 4px;
-  background: repeating-linear-gradient(90deg,
-    #00d4ff 0px, #00d4ff 8px,
-    transparent 8px, transparent 16px
-  );
-  background-size: 32px 100%;
-  animation: track-move 0.6s linear infinite;
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
-  z-index: -1;
-}
-.nav-left a:hover::after, .nav-right a:hover::after { opacity: 1; }
+.nav-left a:hover, .nav-right a:hover { color: #00d4ff; text-shadow: 0 0 8px rgba(0, 212, 255, 0.4); }
 
 .dropdown { position: relative; }
 .dropdown-menu {
@@ -100,23 +81,6 @@ header::after {
   visibility: visible;
   transform: translateY(0);
 }
-.dropdown-menu::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 10px;
-  background: repeating-linear-gradient(90deg,
-    #00d4ff 0px, #00d4ff 8px,
-    transparent 8px, transparent 16px
-  );
-  background-size: 32px 100%;
-  animation: track-move 0.6s linear infinite;
-  opacity: 0;
-  transition: opacity 0.25s;
-  pointer-events: none;
-  z-index: -1;
-}
-.dropdown:hover .dropdown-menu::after { opacity: 1; }
 .dropdown-menu a {
   display: block;
   padding: 10px 20px;
@@ -284,25 +248,7 @@ header::after {
   letter-spacing: 1px;
   transition: all 0.25s ease;
   background: rgba(0, 212, 255, 0.04);
-  position: relative;
 }
-.game-item::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 10px;
-  background: repeating-linear-gradient(90deg,
-    #00d4ff 0px, #00d4ff 8px,
-    transparent 8px, transparent 16px
-  );
-  background-size: 32px 100%;
-  animation: track-move 0.6s linear infinite;
-  opacity: 0;
-  transition: opacity 0.25s;
-  pointer-events: none;
-  z-index: -1;
-}
-.game-item:hover::after { opacity: 1; }
 .game-item:hover {
   background: rgba(0, 212, 255, 0.12);
   border-color: #00d4ff;
@@ -327,26 +273,8 @@ footer {
   color: #4d88bb;
   font-size: 22px;
   transition: color 0.2s;
-  position: relative;
 }
-.footer-links a::after {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 6px;
-  background: repeating-linear-gradient(90deg,
-    #00d4ff 0px, #00d4ff 6px,
-    transparent 6px, transparent 12px
-  );
-  background-size: 24px 100%;
-  animation: track-move 0.5s linear infinite;
-  opacity: 0;
-  transition: opacity 0.2s;
-  pointer-events: none;
-  z-index: -1;
-}
-.footer-links a:hover::after { opacity: 1; }
-.footer-links a:hover { color: #00d4ff; }
+.footer-links a:hover { color: #00d4ff; text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
 footer p {
   color: #4d88bb;
   font-size: 13px;
