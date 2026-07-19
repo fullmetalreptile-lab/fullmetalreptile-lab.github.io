@@ -77,7 +77,7 @@ const TWITCH_PARENTS = (function() {
 })();
 
 function twitchEmbed(params) {
-  return `<iframe src="https://player.twitch.tv/?${params}&parent=${TWITCH_PARENTS}&autoplay=true" allow="autoplay" allowfullscreen></iframe>`;
+  return `<iframe src="https://player.twitch.tv/?${params}&parent=${TWITCH_PARENTS}&autoplay=true&muted=true&loop=true" allow="autoplay" allowfullscreen></iframe>`;
 }
 
 function renderSlide(index) {
