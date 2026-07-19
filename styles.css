@@ -145,19 +145,21 @@ header::after {
 }
 
 .viewer-content {
-  width: min(90vw, 1100px);
-  aspect-ratio: 16 / 9;
-  max-height: calc(100vh - 220px);
+  width: min(75vw, 900px);
+  height: min(calc(75vw * 9 / 16), calc((100vh - 180px) * 0.75));
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(0, 212, 255, 0.25);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 60px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 212, 255, 0.08);
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.7), 0 0 24px rgba(0, 212, 255, 0.1);
 }
 
 .viewer-content iframe {
+  position: absolute;
+  top: 0; left: 0;
   width: 100%;
   height: 100%;
   border: none;
