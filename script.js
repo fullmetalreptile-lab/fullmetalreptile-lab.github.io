@@ -76,36 +76,6 @@ const TWITCH_PARENTS = (function() {
   return bases.join('&parent=');
 })();
 
-// Load Twitch Embed API
-(function() {
-  var s = document.createElement('script');
-  s.src = 'https://embed.twitch.tv/embed/v1.js';
-  s.async = true;
-  document.head.appendChild(s);
-})();
-
-var twitchPlayerId = 0;
-var hasInteracted = false;
-
-function waitForTwitch(cb) {
-  if (window.Twitch) { cb(); return; }
-  var check = setInterval(function() {
-    if (window.Twitch) { clearInterval(check); cb(); }
-  }, 100);
-}
-
-function buildTwitchPlayer(divId, opts) {
-  waitForTwitch(function() {
-    opts.autoplay = true;
-    opts.muted = true;
-    var player = new Twitch.Player(divId, opts);
-    player.addEventListener(Twitch.Player.READY, function() {
-      player.setMuted(true);
-      player.play();
-    });
-  });
-}
-
 function createIframe(parent, src) {
   const iframe = document.createElement('iframe');
   iframe.setAttribute('allow', 'autoplay; fullscreen');
@@ -130,30 +100,10 @@ function renderSlide(index) {
   viewerContent.innerHTML = '';
   if (slide.type === 'youtube') {
     createIframe(viewerContent, `https://www.youtube.com/embed/${slide.id}?autoplay=1&mute=1`);
-  } else if (slide.type === 'twitch' || slide.type === 'twitch-vod') {
-    // Before first user interaction, show a play overlay (autoplay blocked by browser)
-    if (!hasInteracted) {
-      var placeholder = document.createElement('div');
-      placeholder.className = 'viewer-placeholder';
-      placeholder.style.cssText = 'flex-direction:column;gap:16px;cursor:pointer';
-      placeholder.innerHTML = '<img src="logo.webp" alt="" class="viewer-logo" style="opacity:0.4"><svg viewBox="0 0 24 24" width="64" height="64" fill="#00d4ff" style="opacity:0.6"><path d="M8 5v14l11-7z"/></svg>';
-      placeholder.addEventListener('click', function() {
-        hasInteracted = true;
-        renderSlide(index);
-      }, { once: true });
-      viewerContent.appendChild(placeholder);
-    } else {
-      var id = 'twitch-player-' + (++twitchPlayerId);
-      var div = document.createElement('div');
-      div.id = id;
-      div.style.cssText = 'width:100%;height:100%';
-      viewerContent.appendChild(div);
-      if (slide.type === 'twitch') {
-        buildTwitchPlayer(id, { channel: 'fullmetalreptile', width: '100%', height: '100%', autoplay: true, muted: true });
-      } else {
-        buildTwitchPlayer(id, { video: slide.id, width: '100%', height: '100%', autoplay: true, muted: true });
-      }
-    }
+  } else if (slide.type === 'twitch') {
+    createIframe(viewerContent, `https://player.twitch.tv/?channel=fullmetalreptile&parent=${TWITCH_PARENTS}&autoplay=true&muted=true`);
+  } else if (slide.type === 'twitch-vod') {
+    createIframe(viewerContent, `https://player.twitch.tv/?video=${slide.id}&parent=${TWITCH_PARENTS}&autoplay=true&muted=true`);
   } else if (slide.type === 'link') {
     viewerContent.innerHTML = `<div class="viewer-placeholder" style="flex-direction:column;gap:20px"><img src="logo.webp" alt="" class="viewer-logo" style="opacity:0.4"><a href="${slide.url}" target="_blank" rel="noopener" style="color:#00d4ff;font-size:18px;text-transform:uppercase;letter-spacing:2px;border:1px solid rgba(0,212,255,0.3);padding:14px 32px;border-radius:8px;text-decoration:none">Watch on ${slide.label}</a></div>`;
   }
@@ -161,21 +111,19 @@ function renderSlide(index) {
 
 arrowLeft.addEventListener('click', () => {
   if (slides.length === 0) return;
-  hasInteracted = true;
   currentSlide = (currentSlide - 1 + slides.length) % slides.length;
   renderSlide(currentSlide);
 });
 
 arrowRight.addEventListener('click', () => {
   if (slides.length === 0) return;
-  hasInteracted = true;
   currentSlide = (currentSlide + 1) % slides.length;
   renderSlide(currentSlide);
 });
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft') { hasInteracted = true; arrowLeft.click(); }
-  if (e.key === 'ArrowRight') { hasInteracted = true; arrowRight.click(); }
+  if (e.key === 'ArrowLeft') arrowLeft.click();
+  if (e.key === 'ArrowRight') arrowRight.click();
 });
 
 function updateBadges(twitchLive, kickLive) {
