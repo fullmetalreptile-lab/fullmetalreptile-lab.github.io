@@ -76,8 +76,13 @@ const TWITCH_PARENTS = (function() {
   return bases.join('&parent=');
 })();
 
-function twitchEmbed(params) {
-  return `<iframe src="https://player.twitch.tv/?${params}&parent=${TWITCH_PARENTS}&autoplay=true&muted=true&loop=true" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+function createIframe(parent, src) {
+  const iframe = document.createElement('iframe');
+  iframe.setAttribute('allow', 'autoplay; fullscreen');
+  iframe.setAttribute('allowfullscreen', '');
+  parent.appendChild(iframe);
+  iframe.src = src;
+  return iframe;
 }
 
 function renderSlide(index) {
@@ -92,12 +97,13 @@ function renderSlide(index) {
   arrowLeft.style.display = index === 0 ? 'none' : '';
   arrowRight.style.display = index === slides.length - 1 ? 'none' : '';
   viewerLabel.textContent = slide.label;
+  viewerContent.innerHTML = '';
   if (slide.type === 'youtube') {
-    viewerContent.innerHTML = `<iframe src="https://www.youtube.com/embed/${slide.id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    createIframe(viewerContent, `https://www.youtube.com/embed/${slide.id}?autoplay=1&mute=1`);
   } else if (slide.type === 'twitch') {
-    viewerContent.innerHTML = twitchEmbed(slide.id);
+    createIframe(viewerContent, `https://player.twitch.tv/?${slide.id}&parent=${TWITCH_PARENTS}&autoplay=true&muted=true&loop=true`);
   } else if (slide.type === 'twitch-vod') {
-    viewerContent.innerHTML = twitchEmbed('video=' + slide.id);
+    createIframe(viewerContent, `https://player.twitch.tv/?video=${slide.id}&parent=${TWITCH_PARENTS}&autoplay=true&muted=true&loop=true`);
   } else if (slide.type === 'link') {
     viewerContent.innerHTML = `<div class="viewer-placeholder" style="flex-direction:column;gap:20px"><img src="logo.webp" alt="" class="viewer-logo" style="opacity:0.4"><a href="${slide.url}" target="_blank" rel="noopener" style="color:#00d4ff;font-size:18px;text-transform:uppercase;letter-spacing:2px;border:1px solid rgba(0,212,255,0.3);padding:14px 32px;border-radius:8px;text-decoration:none">Watch on ${slide.label}</a></div>`;
   }
