@@ -10,6 +10,7 @@ async function checkLiveStatus() {
   const badges = document.querySelectorAll('.live-badge');
   let twitchLive = false;
   let kickLive = false;
+  let youtubeLive = false;
 
   try {
     const twitchRes = await fetch('https://decapi.me/twitch/uptime/fullmetalreptile');
@@ -25,14 +26,25 @@ async function checkLiveStatus() {
     }
   } catch (e) {}
 
-  let chosen = null;
-  if (twitchLive && kickLive) {
-    chosen = Math.random() < 0.5 ? 'twitch' : 'kick';
-  } else if (twitchLive) {
-    chosen = 'twitch';
-  } else if (kickLive) {
-    chosen = 'kick';
+  try {
+    const ytRes = await fetch(`https://www.youtube.com/@FullMetalReptile`, { mode: 'cors' });
+    const ytText = await ytRes.text();
+    youtubeLive = ytText.includes('isLiveNow') || ytText.includes('"isLive":true');
+  } catch (e) {
+    try {
+      const ytRes2 = await fetch(`https://www.youtube.com/@FullMetalReptile/live`, { mode: 'cors' });
+      youtubeLive = ytRes2.redirected || ytRes2.url.includes('/watch');
+    } catch (e2) {}
   }
+
+  const liveServices = [];
+  if (twitchLive) liveServices.push('twitch');
+  if (kickLive) liveServices.push('kick');
+  if (youtubeLive) liveServices.push('youtube');
+
+  const chosen = liveServices.length > 0
+    ? liveServices[Math.floor(Math.random() * liveServices.length)]
+    : null;
 
   badges.forEach(b => {
     if (b.dataset.service === chosen) {
