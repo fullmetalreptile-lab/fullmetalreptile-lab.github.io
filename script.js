@@ -59,7 +59,7 @@ function extractTwitchVodId(url) {
 function renderSlide(index) {
   const slide = slides[index];
   if (!slide) {
-    viewerContent.innerHTML = '<div class="viewer-placeholder"><img src="jI5PI.png" alt="" class="viewer-logo"></div>';
+    viewerContent.innerHTML = '<div class="viewer-placeholder"><img src="logo.webp" alt="" class="viewer-logo"></div>';
     viewerLabel.textContent = '';
     return;
   }
@@ -71,7 +71,7 @@ function renderSlide(index) {
   } else if (slide.type === 'twitch-vod') {
     viewerContent.innerHTML = `<iframe src="https://player.twitch.tv/?video=${slide.id}&parent=fullmetalreptile.com&autoplay=true" allow="autoplay" allowfullscreen></iframe>`;
   } else if (slide.type === 'link') {
-    viewerContent.innerHTML = `<div class="viewer-placeholder" style="flex-direction:column;gap:20px"><img src="jI5PI.png" alt="" class="viewer-logo" style="opacity:0.4"><a href="${slide.url}" target="_blank" rel="noopener" style="color:#00d4ff;font-size:18px;text-transform:uppercase;letter-spacing:2px;border:1px solid rgba(0,212,255,0.3);padding:14px 32px;border-radius:8px;text-decoration:none">Watch on ${slide.label}</a></div>`;
+    viewerContent.innerHTML = `<div class="viewer-placeholder" style="flex-direction:column;gap:20px"><img src="logo.webp" alt="" class="viewer-logo" style="opacity:0.4"><a href="${slide.url}" target="_blank" rel="noopener" style="color:#00d4ff;font-size:18px;text-transform:uppercase;letter-spacing:2px;border:1px solid rgba(0,212,255,0.3);padding:14px 32px;border-radius:8px;text-decoration:none">Watch on ${slide.label}</a></div>`;
   }
 }
 
