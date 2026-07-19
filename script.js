@@ -1,3 +1,11 @@
+// One-time cache cleanup from old versions
+try {
+  if (!localStorage.getItem('fmr_v2')) {
+    Object.keys(localStorage).filter(k => k.startsWith('fmr_')).forEach(k => localStorage.removeItem(k));
+    localStorage.setItem('fmr_v2', '1');
+  }
+} catch {}
+
 const isMobile = /Mobi|Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900;
 if (isMobile) document.documentElement.classList.add('mobile');
 
@@ -56,6 +64,12 @@ function extractTwitchVodId(url) {
   return m ? m[1] : null;
 }
 
+const TWITCH_PARENT = 'fullmetalreptile.com';
+
+function twitchEmbed(params) {
+  return `<iframe src="https://player.twitch.tv/?${params}&parent=${TWITCH_PARENT}&autoplay=true" allow="autoplay" allowfullscreen></iframe>`;
+}
+
 function renderSlide(index) {
   const slide = slides[index];
   if (!slide) {
@@ -71,9 +85,9 @@ function renderSlide(index) {
   if (slide.type === 'youtube') {
     viewerContent.innerHTML = `<iframe src="https://www.youtube.com/embed/${slide.id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   } else if (slide.type === 'twitch') {
-    viewerContent.innerHTML = `<iframe src="https://player.twitch.tv/?${slide.id}&parent=fullmetalreptile.com&autoplay=true" allow="autoplay" allowfullscreen></iframe>`;
+    viewerContent.innerHTML = twitchEmbed(slide.id);
   } else if (slide.type === 'twitch-vod') {
-    viewerContent.innerHTML = `<iframe src="https://player.twitch.tv/?video=${slide.id}&parent=fullmetalreptile.com&autoplay=true" allow="autoplay" allowfullscreen></iframe>`;
+    viewerContent.innerHTML = twitchEmbed('video=' + slide.id);
   } else if (slide.type === 'link') {
     viewerContent.innerHTML = `<div class="viewer-placeholder" style="flex-direction:column;gap:20px"><img src="logo.webp" alt="" class="viewer-logo" style="opacity:0.4"><a href="${slide.url}" target="_blank" rel="noopener" style="color:#00d4ff;font-size:18px;text-transform:uppercase;letter-spacing:2px;border:1px solid rgba(0,212,255,0.3);padding:14px 32px;border-radius:8px;text-decoration:none">Watch on ${slide.label}</a></div>`;
   }
