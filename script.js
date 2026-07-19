@@ -97,7 +97,7 @@ document.addEventListener('keydown', e => {
 });
 
 async function fetchAll() {
-  const results = { ytVideoId: null, twitchLive: false, twitchVodId: null, kickLive: false, ytLive: false };
+  const results = { ytVideoId: null, twitchLive: false, twitchVodId: null, kickLive: false };
 
   const fetches = [];
 
@@ -125,19 +125,6 @@ async function fetchAll() {
     }).catch(() => {})
   );
 
-  // YouTube live check (race with timeout)
-  fetches.push(
-    new Promise(resolve => {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      fetch('https://www.youtube.com/@FullMetalReptile', { signal: controller.signal, mode: 'cors' })
-        .then(r => r.text())
-        .then(t => { results.ytLive = t.includes('isLiveNow') || t.includes('"isLive":true'); })
-        .catch(() => {})
-        .finally(() => { clearTimeout(timeout); resolve(); });
-    })
-  );
-
   await Promise.allSettled(fetches);
 
   slides = [];
@@ -149,13 +136,14 @@ async function fetchAll() {
   if (slides.length > 0) {
     currentSlide = 0;
     renderSlide(0);
+  } else {
+    renderSlide(-1);
   }
 
   // Update live badges
   const liveServices = [];
   if (results.twitchLive) liveServices.push('twitch');
   if (results.kickLive) liveServices.push('kick');
-  if (results.ytLive) liveServices.push('youtube');
   const chosen = liveServices.length > 0 ? liveServices[Math.floor(Math.random() * liveServices.length)] : null;
   document.querySelectorAll('.live-badge').forEach(b => {
     if (b.dataset.service === chosen) {
