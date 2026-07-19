@@ -58,10 +58,16 @@ function extractTwitchVodId(url) {
   return m ? m[1] : null;
 }
 
-const TWITCH_PARENT = 'fullmetalreptile.com';
+const TWITCH_PARENTS = (function() {
+  const h = location.hostname;
+  const bases = [h];
+  if (h === 'fullmetalreptile.com') bases.push('www.fullmetalreptile.com');
+  else if (h === 'www.fullmetalreptile.com') bases.push('fullmetalreptile.com');
+  return bases.join('&parent=');
+})();
 
 function twitchEmbed(params) {
-  return `<iframe src="https://player.twitch.tv/?${params}&parent=${TWITCH_PARENT}&autoplay=true" allow="autoplay" allowfullscreen></iframe>`;
+  return `<iframe src="https://player.twitch.tv/?${params}&parent=${TWITCH_PARENTS}&autoplay=true" allow="autoplay" allowfullscreen></iframe>`;
 }
 
 function renderSlide(index) {
