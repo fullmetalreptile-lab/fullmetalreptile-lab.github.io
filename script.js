@@ -76,6 +76,23 @@ const TWITCH_PARENTS = (function() {
   return bases.join('&parent=');
 })();
 
+// Load Twitch Embed API
+(function() {
+  var s = document.createElement('script');
+  s.src = 'https://embed.twitch.tv/embed/v1.js';
+  s.async = true;
+  document.head.appendChild(s);
+})();
+
+var twitchPlayerId = 0;
+
+function waitForTwitch(cb) {
+  if (window.Twitch) { cb(); return; }
+  var check = setInterval(function() {
+    if (window.Twitch) { clearInterval(check); cb(); }
+  }, 100);
+}
+
 function createIframe(parent, src) {
   const iframe = document.createElement('iframe');
   iframe.setAttribute('allow', 'autoplay; fullscreen');
@@ -101,9 +118,35 @@ function renderSlide(index) {
   if (slide.type === 'youtube') {
     createIframe(viewerContent, `https://www.youtube.com/embed/${slide.id}?autoplay=1&mute=1`);
   } else if (slide.type === 'twitch') {
-    createIframe(viewerContent, `https://player.twitch.tv/?${slide.id}&parent=${TWITCH_PARENTS}&autoplay=true&muted=true&loop=true`);
+    var id = 'twitch-player-' + (++twitchPlayerId);
+    var div = document.createElement('div');
+    div.id = id;
+    div.style.cssText = 'width:100%;height:100%';
+    viewerContent.appendChild(div);
+    waitForTwitch(function() {
+      new Twitch.Player(id, {
+        channel: 'fullmetalreptile',
+        width: '100%',
+        height: '100%',
+        autoplay: true,
+        muted: true
+      });
+    });
   } else if (slide.type === 'twitch-vod') {
-    createIframe(viewerContent, `https://player.twitch.tv/?video=${slide.id}&parent=${TWITCH_PARENTS}&autoplay=true&muted=true&loop=true`);
+    var id = 'twitch-player-' + (++twitchPlayerId);
+    var div = document.createElement('div');
+    div.id = id;
+    div.style.cssText = 'width:100%;height:100%';
+    viewerContent.appendChild(div);
+    waitForTwitch(function() {
+      new Twitch.Player(id, {
+        video: slide.id,
+        width: '100%',
+        height: '100%',
+        autoplay: true,
+        muted: true
+      });
+    });
   } else if (slide.type === 'link') {
     viewerContent.innerHTML = `<div class="viewer-placeholder" style="flex-direction:column;gap:20px"><img src="logo.webp" alt="" class="viewer-logo" style="opacity:0.4"><a href="${slide.url}" target="_blank" rel="noopener" style="color:#00d4ff;font-size:18px;text-transform:uppercase;letter-spacing:2px;border:1px solid rgba(0,212,255,0.3);padding:14px 32px;border-radius:8px;text-decoration:none">Watch on ${slide.label}</a></div>`;
   }
