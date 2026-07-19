@@ -52,6 +52,16 @@ const API = {
   }
 };
 
+const YT_CHANNEL_ID = 'UCH0pZ3TvrJiA51F_jzArXNA';
+const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+const YT_RSS = encodeURIComponent(`https://www.youtube.com/feeds/videos.xml?channel_id=${YT_CHANNEL_ID}`);
+
+function extractYouTubeId(url) {
+  if (!url) return null;
+  const m = url.match(/(?:v=|youtu\.be\/|\/embed\/)([\w-]{11})/);
+  return m ? m[1] : null;
+}
+
 function extractTwitchVodId(url) {
   if (!url) return null;
   const m = url.match(/(?:videos\/|video=)(\d+)/);
@@ -128,7 +138,7 @@ function updateBadges(twitchLive, kickLive) {
 
 function buildSlidesFrom(results) {
   slides = [];
-  slides.push({ type: 'link', url: 'https://www.youtube.com/@FullMetalReptile', label: 'YouTube' });
+  if (results.ytVideoId) slides.push({ type: 'youtube', id: results.ytVideoId, label: 'Latest YouTube Video' });
   if (results.twitchLive) slides.push({ type: 'twitch', id: 'channel=fullmetalreptile', label: 'Twitch Live' });
   else if (results.twitchVodId) slides.push({ type: 'twitch-vod', id: results.twitchVodId, label: 'Latest Twitch VOD' });
   if (results.kickLive) slides.push({ type: 'link', url: 'https://kick.com/full-metal-reptile', label: 'Kick Live' });
@@ -142,9 +152,18 @@ function buildSlidesFrom(results) {
 }
 
 async function fetchAll() {
-  const results = { twitchLive: false, twitchVodId: null, kickLive: false };
+  const results = { ytVideoId: null, twitchLive: false, twitchVodId: null, kickLive: false };
 
   const fetches = [];
+
+  // YouTube latest video via rss2json (CORS-friendly RSS-to-JSON)
+  fetches.push(
+    API.json(RSS2JSON + YT_RSS, 'yt_rss', 300000).then(d => {
+      if (d && d.items && d.items.length > 0) {
+        results.ytVideoId = extractYouTubeId(d.items[0].link);
+      }
+    }).catch(() => {})
+  );
 
   // Twitch live
   fetches.push(

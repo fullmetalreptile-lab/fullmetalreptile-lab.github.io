@@ -123,11 +123,13 @@ header::after {
 .dropdown-menu a:hover { background: rgba(0, 212, 255, 0.08); }
 
 .logo {
-  height: 120px;
+  height: 100%;
   width: auto;
   display: block;
   position: relative;
   left: -30px;
+  object-fit: contain;
+  padding: 4px 0;
 }
 
 .nav-right svg { font-size: 18px; margin-right: 4px; }
@@ -230,7 +232,7 @@ html.mobile .nav-left, html.mobile .nav-right {
 }
 html.mobile .nav-right { justify-content: center; }
 html.mobile .nav-left a, html.mobile .nav-right a { font-size: 12px; letter-spacing: 0.5px; }
-html.mobile .logo { height: 60px; left: auto; }
+html.mobile .logo { height: 80px; left: auto; padding: 0; }
 html.mobile .nav-right a span { display: none; }
 html.mobile .nav-right svg { font-size: 16px; margin: 0; }
 html.mobile header::after { height: 3px; }
