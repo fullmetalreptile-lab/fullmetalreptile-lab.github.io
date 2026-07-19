@@ -36,7 +36,7 @@ header::after {
     transparent 100%
   );
   background-size: 200% 100%;
-  animation: sweep 1.5s ease-in-out infinite;
+  animation: sweep 4s linear infinite;
   z-index: 1001;
   filter: drop-shadow(0 0 6px #00d4ff);
 }
