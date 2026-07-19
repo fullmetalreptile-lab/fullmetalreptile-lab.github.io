@@ -27,18 +27,22 @@ header::after {
   content: '';
   position: absolute;
   bottom: -1px; left: 0; right: 0;
-  height: 3px;
-  background: repeating-linear-gradient(90deg,
-    #00d4ff 0px, #00d4ff 15px,
-    transparent 15px, transparent 25px
+  height: 4px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    transparent 30%,
+    #00d4ff 50%,
+    transparent 70%,
+    transparent 100%
   );
-  background-size: 50px 100%;
-  animation: track-move 0.8s linear infinite;
+  background-size: 200% 100%;
+  animation: sweep 1.5s ease-in-out infinite;
   z-index: 1001;
+  filter: drop-shadow(0 0 6px #00d4ff);
 }
-@keyframes track-move {
-  0% { background-position: 0 0; }
-  100% { background-position: 50px 0; }
+@keyframes sweep {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .nav-left, .nav-right {
