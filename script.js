@@ -61,8 +61,12 @@ function renderSlide(index) {
   if (!slide) {
     viewerContent.innerHTML = '<div class="viewer-placeholder"><img src="logo.webp" alt="" class="viewer-logo"></div>';
     viewerLabel.textContent = '';
+    arrowLeft.style.display = 'none';
+    arrowRight.style.display = 'none';
     return;
   }
+  arrowLeft.style.display = index === 0 ? 'none' : '';
+  arrowRight.style.display = index === slides.length - 1 ? 'none' : '';
   viewerLabel.textContent = slide.label;
   if (slide.type === 'youtube') {
     viewerContent.innerHTML = `<iframe src="https://www.youtube.com/embed/${slide.id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
