@@ -9,6 +9,41 @@ const arrowRight = document.getElementById('arrowRight');
 let slides = [];
 let currentSlide = 0;
 
+const cache = {
+  get(key) {
+    try {
+      const raw = localStorage.getItem('fmr_' + key);
+      if (!raw) return null;
+      const { data, expiry } = JSON.parse(raw);
+      return Date.now() < expiry ? data : null;
+    } catch { return null; }
+  },
+  set(key, data, ttlMs = 120000) {
+    try {
+      localStorage.setItem('fmr_' + key, JSON.stringify({ data, expiry: Date.now() + ttlMs }));
+    } catch {}
+  }
+};
+
+const API = {
+  async text(url, cacheKey, ttl) {
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    const text = await res.text();
+    cache.set(cacheKey, text, ttl);
+    return text;
+  },
+  async json(url, cacheKey, ttl) {
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+    const data = await res.json();
+    cache.set(cacheKey, data, ttl);
+    return data;
+  }
+};
+
 function extractYouTubeId(url) {
   if (!url) return null;
   const m = url.match(/(?:v=|youtu\.be\/|\/embed\/)([\w-]{11})/);
@@ -24,7 +59,7 @@ function extractTwitchVodId(url) {
 function renderSlide(index) {
   const slide = slides[index];
   if (!slide) {
-    viewerContent.innerHTML = `<div class="viewer-placeholder"><img src="jI5PI.png" alt="" class="viewer-logo"></div>`;
+    viewerContent.innerHTML = '<div class="viewer-placeholder"><img src="jI5PI.png" alt="" class="viewer-logo"></div>';
     viewerLabel.textContent = '';
     return;
   }
@@ -57,110 +92,68 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') arrowRight.click();
 });
 
-async function buildSlides() {
-  let ytVideoId = null;
-  let twitchLive = false;
-  let twitchVodId = null;
-  let kickUrl = null;
+async function fetchAll() {
+  const results = { ytVideoId: null, twitchLive: false, twitchVodId: null, kickLive: false, ytLive: false };
 
-  // YouTube latest video
-  try {
-    const res = await fetch('https://decapi.me/youtube/videos/fullmetalreptile?limit=1');
-    const text = await res.text();
-    if (text && text.startsWith('http')) {
-      ytVideoId = extractYouTubeId(text);
-    }
-  } catch (e) {}
+  const fetches = [];
 
-  // Twitch
-  try {
-    const liveRes = await fetch('https://decapi.me/twitch/uptime/fullmetalreptile');
-    const liveText = await liveRes.text();
-    twitchLive = liveText && liveText.length > 0 && !liveText.includes('offline');
-  } catch (e) {}
+  fetches.push(
+    API.text('https://decapi.me/youtube/videos/fullmetalreptile?limit=1', 'yt_video', 300000).then(t => {
+      if (t && t.startsWith('http')) results.ytVideoId = extractYouTubeId(t);
+    }).catch(() => {})
+  );
 
-  try {
-    const vodRes = await fetch('https://decapi.me/twitch/vods/fullmetalreptile?limit=1');
-    const vodText = await vodRes.text();
-    if (vodText && vodText.startsWith('http')) {
-      twitchVodId = extractTwitchVodId(vodText);
-    }
-  } catch (e) {}
+  fetches.push(
+    API.text('https://decapi.me/twitch/uptime/fullmetalreptile', 'tw_uptime', 120000).then(t => {
+      results.twitchLive = t && t.length > 0 && !t.includes('offline');
+    }).catch(() => {})
+  );
 
-  // Kick
-  try {
-    const kickRes = await fetch(`https://kick.com/api/v2/channels/full-metal-reptile`);
-    if (kickRes.ok) {
-      const data = await kickRes.json();
-      if (data?.livestream?.is_live === true) {
-        kickUrl = 'https://kick.com/full-metal-reptile';
-      }
-    }
-  } catch (e) {}
+  fetches.push(
+    API.text('https://decapi.me/twitch/vods/fullmetalreptile?limit=1', 'tw_vod', 300000).then(t => {
+      if (t && t.startsWith('http')) results.twitchVodId = extractTwitchVodId(t);
+    }).catch(() => {})
+  );
+
+  fetches.push(
+    API.json('https://kick.com/api/v2/channels/full-metal-reptile', 'kick', 120000).then(d => {
+      results.kickLive = d?.livestream?.is_live === true;
+    }).catch(() => {})
+  );
+
+  // YouTube live check (race with timeout)
+  fetches.push(
+    new Promise(resolve => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      fetch('https://www.youtube.com/@FullMetalReptile', { signal: controller.signal, mode: 'cors' })
+        .then(r => r.text())
+        .then(t => { results.ytLive = t.includes('isLiveNow') || t.includes('"isLive":true'); })
+        .catch(() => {})
+        .finally(() => { clearTimeout(timeout); resolve(); });
+    })
+  );
+
+  await Promise.allSettled(fetches);
 
   slides = [];
-
-  if (ytVideoId) {
-    slides.push({ type: 'youtube', id: ytVideoId, label: 'Latest YouTube Video' });
-  }
-  if (twitchLive) {
-    slides.push({ type: 'twitch', id: 'channel=fullmetalreptile', label: 'Twitch Live' });
-  } else if (twitchVodId) {
-    slides.push({ type: 'twitch-vod', id: twitchVodId, label: 'Latest Twitch VOD' });
-  }
-  if (kickUrl) {
-    slides.push({ type: 'link', url: kickUrl, label: 'Kick Live' });
-  }
+  if (results.ytVideoId) slides.push({ type: 'youtube', id: results.ytVideoId, label: 'Latest YouTube Video' });
+  if (results.twitchLive) slides.push({ type: 'twitch', id: 'channel=fullmetalreptile', label: 'Twitch Live' });
+  else if (results.twitchVodId) slides.push({ type: 'twitch-vod', id: results.twitchVodId, label: 'Latest Twitch VOD' });
+  if (results.kickLive) slides.push({ type: 'link', url: 'https://kick.com/full-metal-reptile', label: 'Kick Live' });
 
   if (slides.length > 0) {
     currentSlide = 0;
     renderSlide(0);
   }
-}
 
-buildSlides();
-
-async function checkLiveStatus() {
-  const badges = document.querySelectorAll('.live-badge');
-  let twitchLive = false;
-  let kickLive = false;
-  let youtubeLive = false;
-
-  try {
-    const twitchRes = await fetch('https://decapi.me/twitch/uptime/fullmetalreptile');
-    const twitchText = await twitchRes.text();
-    twitchLive = twitchText && twitchText.length > 0 && !twitchText.includes('offline');
-  } catch (e) {}
-
-  try {
-    const kickRes = await fetch(`https://kick.com/api/v2/channels/full-metal-reptile`);
-    if (kickRes.ok) {
-      const data = await kickRes.json();
-      kickLive = data?.livestream?.is_live === true;
-    }
-  } catch (e) {}
-
-  try {
-    const ytRes = await fetch(`https://www.youtube.com/@FullMetalReptile`, { mode: 'cors' });
-    const ytText = await ytRes.text();
-    youtubeLive = ytText.includes('isLiveNow') || ytText.includes('"isLive":true');
-  } catch (e) {
-    try {
-      const ytRes2 = await fetch(`https://www.youtube.com/@FullMetalReptile/live`, { mode: 'cors' });
-      youtubeLive = ytRes2.redirected || ytRes2.url.includes('/watch');
-    } catch (e2) {}
-  }
-
+  // Update live badges
   const liveServices = [];
-  if (twitchLive) liveServices.push('twitch');
-  if (kickLive) liveServices.push('kick');
-  if (youtubeLive) liveServices.push('youtube');
-
-  const chosen = liveServices.length > 0
-    ? liveServices[Math.floor(Math.random() * liveServices.length)]
-    : null;
-
-  badges.forEach(b => {
+  if (results.twitchLive) liveServices.push('twitch');
+  if (results.kickLive) liveServices.push('kick');
+  if (results.ytLive) liveServices.push('youtube');
+  const chosen = liveServices.length > 0 ? liveServices[Math.floor(Math.random() * liveServices.length)] : null;
+  document.querySelectorAll('.live-badge').forEach(b => {
     if (b.dataset.service === chosen) {
       b.textContent = 'LIVE';
       b.classList.add('live');
@@ -170,4 +163,5 @@ async function checkLiveStatus() {
     }
   });
 }
-checkLiveStatus();
+
+fetchAll();

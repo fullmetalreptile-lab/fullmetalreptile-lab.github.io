@@ -130,7 +130,7 @@ header::after {
   left: -30px;
 }
 
-.nav-right i, .nav-right svg { font-size: 18px; margin-right: 4px; }
+.nav-right svg { font-size: 18px; margin-right: 4px; }
 
 /* Viewer */
 .viewer {
@@ -232,6 +232,6 @@ html.mobile .nav-right { justify-content: center; }
 html.mobile .nav-left a, html.mobile .nav-right a { font-size: 12px; letter-spacing: 0.5px; }
 html.mobile .logo { height: 60px; left: auto; }
 html.mobile .nav-right a span { display: none; }
-html.mobile .nav-right i, html.mobile .nav-right svg { font-size: 16px; margin: 0; }
+html.mobile .nav-right svg { font-size: 16px; margin: 0; }
 html.mobile header::after { height: 3px; }
 html.mobile .viewer { top: calc(60px + 60px + 6px); }
