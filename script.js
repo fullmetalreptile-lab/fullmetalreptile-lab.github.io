@@ -124,7 +124,7 @@ function renderSlide(index) {
     div.style.cssText = 'width:100%;height:100%';
     viewerContent.appendChild(div);
     waitTwitch(function() {
-      new Twitch.Player(id, { channel: 'fullmetalreptile', width: '100%', height: '100%', autoplay: true });
+      new Twitch.Player(id, { channel: 'fullmetalreptile', width: '100%', height: '100%', autoplay: true, muted: true });
     });
   } else if (slide.type === 'twitch-vod') {
     var id = 'tw-p-' + (++tPlayerId);
@@ -133,7 +133,7 @@ function renderSlide(index) {
     div.style.cssText = 'width:100%;height:100%';
     viewerContent.appendChild(div);
     waitTwitch(function() {
-      new Twitch.Player(id, { video: slide.id, width: '100%', height: '100%', autoplay: true });
+      new Twitch.Player(id, { video: slide.id, width: '100%', height: '100%', autoplay: true, muted: true });
     });
   } else if (slide.type === 'link') {
     viewerContent.innerHTML = `<div class="viewer-placeholder" style="flex-direction:column;gap:20px"><img src="logo.webp" alt="" class="viewer-logo" style="opacity:0.4"><a href="${slide.url}" target="_blank" rel="noopener" style="color:#00d4ff;font-size:18px;text-transform:uppercase;letter-spacing:2px;border:1px solid rgba(0,212,255,0.3);padding:14px 32px;border-radius:8px;text-decoration:none">Watch on ${slide.label}</a></div>`;
