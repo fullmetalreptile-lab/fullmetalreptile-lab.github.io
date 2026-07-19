@@ -52,12 +52,6 @@ const API = {
   }
 };
 
-function extractYouTubeId(url) {
-  if (!url) return null;
-  const m = url.match(/(?:v=|youtu\.be\/|\/embed\/)([\w-]{11})/);
-  return m ? m[1] : null;
-}
-
 function extractTwitchVodId(url) {
   if (!url) return null;
   const m = url.match(/(?:videos\/|video=)(\d+)/);
@@ -128,7 +122,7 @@ function updateBadges(twitchLive, kickLive) {
 
 function buildSlidesFrom(results) {
   slides = [];
-  if (results.ytVideoId) slides.push({ type: 'youtube', id: results.ytVideoId, label: 'Latest YouTube Video' });
+  slides.push({ type: 'link', url: 'https://www.youtube.com/@FullMetalReptile', label: 'YouTube' });
   if (results.twitchLive) slides.push({ type: 'twitch', id: 'channel=fullmetalreptile', label: 'Twitch Live' });
   else if (results.twitchVodId) slides.push({ type: 'twitch-vod', id: results.twitchVodId, label: 'Latest Twitch VOD' });
   if (results.kickLive) slides.push({ type: 'link', url: 'https://kick.com/full-metal-reptile', label: 'Kick Live' });
@@ -142,27 +136,9 @@ function buildSlidesFrom(results) {
 }
 
 async function fetchAll() {
-  const results = { ytVideoId: null, twitchLive: false, twitchVodId: null, kickLive: false };
+  const results = { twitchLive: false, twitchVodId: null, kickLive: false };
 
   const fetches = [];
-
-  // YouTube latest video via CORS proxy
-  fetches.push(
-    (async () => {
-      try {
-        const proxyUrl = 'https://api.allorigins.win/raw?url=';
-        const channelUrl = encodeURIComponent('https://www.youtube.com/@FullMetalReptile');
-        const html = await API.text(proxyUrl + channelUrl, null, 0);
-        // Try to find the first video in ytInitialData
-        const idx = html.indexOf('videoId');
-        if (idx > 0) {
-          const snippet = html.substring(idx, idx + 30);
-          const m = snippet.match(/["']([\w-]{11})["']/);
-          if (m) results.ytVideoId = m[1];
-        }
-      } catch (e) {}
-    })()
-  );
 
   // Twitch live
   fetches.push(
