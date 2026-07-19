@@ -96,7 +96,13 @@ function waitForTwitch(cb) {
 
 function buildTwitchPlayer(divId, opts) {
   waitForTwitch(function() {
-    new Twitch.Player(divId, opts);
+    opts.autoplay = true;
+    opts.muted = true;
+    var player = new Twitch.Player(divId, opts);
+    player.addEventListener(Twitch.Player.READY, function() {
+      player.setMuted(true);
+      player.play();
+    });
   });
 }
 
