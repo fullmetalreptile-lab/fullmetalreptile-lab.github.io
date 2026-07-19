@@ -64,6 +64,34 @@ header::after {
 }
 .nav-left a:hover, .nav-right a:hover { color: #00d4ff; text-shadow: 0 0 12px rgba(0, 212, 255, 0.5); }
 
+.live-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+  margin-left: 4px;
+  color: #ff0040;
+  text-shadow: 0 0 8px rgba(255, 0, 64, 0.6);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.live-badge.live { opacity: 1; }
+.live-badge::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #ff0040;
+  margin-right: 3px;
+  vertical-align: middle;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
 .dropdown { position: relative; }
 .dropdown-menu {
   position: absolute;
@@ -79,6 +107,7 @@ header::after {
   visibility: hidden;
   transform: translateY(8px);
   transition: all 0.25s ease;
+  z-index: 1002;
 }
 .dropdown:hover .dropdown-menu {
   opacity: 1;
@@ -304,3 +333,4 @@ html.mobile .nav-left a, html.mobile .nav-right a { font-size: 12px; letter-spac
 html.mobile .logo { height: 60px; left: auto; }
 html.mobile .nav-right a span { display: none; }
 html.mobile .nav-right i, html.mobile .nav-right svg { font-size: 16px; margin: 0; }
+html.mobile header::after { height: 3px; }
