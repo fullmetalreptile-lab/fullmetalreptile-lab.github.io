@@ -159,13 +159,20 @@ function updateBadges(twitchLive, kickLive) {
   });
 }
 
-function buildSlidesFrom(results) {
-  slides = [];
-  if (results.ytVideoId) slides.push({ type: 'youtube', id: results.ytVideoId, label: 'Latest YouTube Video' });
-  if (results.twitchLive) slides.push({ type: 'twitch', id: 'channel=fullmetalreptile', label: 'Twitch Live' });
-  else if (results.twitchVodId) slides.push({ type: 'twitch-vod', id: results.twitchVodId, label: 'Latest Twitch VOD' });
-  if (results.kickLive) slides.push({ type: 'link', url: 'https://kick.com/full-metal-reptile', label: 'Kick Live' });
+let lastSlidesKey = '';
 
+function buildSlidesFrom(results) {
+  const newSlides = [];
+  if (results.ytVideoId) newSlides.push({ type: 'youtube', id: results.ytVideoId, label: 'Latest YouTube Video' });
+  if (results.twitchLive) newSlides.push({ type: 'twitch', id: 'channel=fullmetalreptile', label: 'Twitch Live' });
+  else if (results.twitchVodId) newSlides.push({ type: 'twitch-vod', id: results.twitchVodId, label: 'Latest Twitch VOD' });
+  if (results.kickLive) newSlides.push({ type: 'link', url: 'https://kick.com/full-metal-reptile', label: 'Kick Live' });
+
+  const newKey = newSlides.map(s => s.type + ':' + (s.id || s.url)).join('|');
+  if (newKey === lastSlidesKey) return;
+  lastSlidesKey = newKey;
+
+  slides = newSlides;
   if (slides.length > 0) {
     currentSlide = Math.min(currentSlide, slides.length - 1);
     renderSlide(currentSlide);
