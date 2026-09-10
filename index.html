@@ -20,13 +20,13 @@
       <li><a href="#" data-track="Home">Home</a></li>
       <li><a href="#" data-track="Store">Store</a></li>
       <li class="dropdown">
-        <a href="#" data-track="Games">Games &#9662;</a>
-        <div class="dropdown-menu">
-          <a href="#" data-track="Chat Rumble">Chat Rumble</a>
-          <a href="#" data-track="Chat City">Chat City</a>
-          <a href="#" data-track="Cat Warlords">Cat Warlords</a>
-          <a href="#" data-track="Chat Valley">Chat Valley</a>
-          <a href="#" data-track="Party Paintball">Party Paintball</a>
+        <a href="#" data-track="Games" aria-haspopup="true" aria-expanded="false">Games &#9662;</a>
+        <div class="dropdown-menu" role="menu">
+          <a href="#" data-track="Chat Rumble" role="menuitem">Chat Rumble</a>
+          <a href="#" data-track="Chat City" role="menuitem">Chat City</a>
+          <a href="#" data-track="Cat Warlords" role="menuitem">Cat Warlords</a>
+          <a href="#" data-track="Chat Valley" role="menuitem">Chat Valley</a>
+          <a href="#" data-track="Party Paintball" role="menuitem">Party Paintball</a>
         </div>
       </li>
     </ul>
@@ -34,21 +34,21 @@
     <img src="logo.webp" alt="Full Metal Reptile" class="logo" width="1024" height="1024" fetchpriority="high">
 
     <ul class="nav-right">
-      <li><a href="https://discord.gg/9vWQvTC7gr" target="_blank" rel="noopener"><svg viewBox="0 0 71 55" width="18" height="18" fill="currentColor"><path d="M60.1 4.9C55.58 2.82 50.73 1.29 45.65.42a.5.5 0 0 0-.23.11c-.62 1.1-1.31 2.56-1.8 3.7a54.4 54.4 0 0 0-10.95 0 40 40 0 0 0-1.8-3.7.5.5 0 0 0-.23-.1A37.63 37.63 0 0 0 10.92 4.9a.5.5 0 0 0-.09.08C1.62 18.1-.8 30.86.35 43.44a.5.5 0 0 0 .1.19c5.44 4.2 10.74 6.72 15.95 8.37a.5.5 0 0 0 .26-.07 37.5 37.5 0 0 0 3.5-5.33.5.5 0 0 0-.13-.32c-1.66-.62-3.25-1.37-4.79-2.24a.5.5 0 0 1-.01-.86c.33-.23.66-.47.98-.72a.5.5 0 0 1 .25-.02 37 37 0 0 0 27.63 0 .5.5 0 0 1 .25.01c.33.25.65.5.98.72a.5.5 0 0 1-.02.86c-1.54.88-3.13 1.63-4.79 2.25a.5.5 0 0 0-.12.32c1 1.86 2.16 3.62 3.46 5.24a.5.5 0 0 0 .26.08c5.2-1.65 10.5-4.18 15.95-8.37a.5.5 0 0 0 .1-.2c1.36-14.37-2.2-27.01-8.91-38.45a.5.5 0 0 0-.1-.09zM24 36.58c-3.54 0-6.45-3.31-6.45-7.4 0-4.08 2.77-7.39 6.45-7.39s6.46 3.33 6.33 7.4c0 4.08-2.84 7.39-6.33 7.39zm23.09 0c-3.54 0-6.45-3.31-6.45-7.4 0-4.08 2.77-7.39 6.45-7.39s6.46 3.33 6.33 7.4c0 4.08-2.84 7.39-6.33 7.39z"/></svg><span>Discord</span></a></li>
-      <li><a href="https://www.youtube.com/@FullMetalReptile" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span>YouTube</span> <span class="live-badge" data-service="youtube"></span></a></li>
-      <li><a href="https://www.twitch.tv/fullmetalreptile" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.428l-3 3v-3H6.857V1.714h13.714Z"/></svg><span>Twitch</span> <span class="live-badge" data-service="twitch"></span></a></li>
-      <li><a href="https://kick.com/full-metal-reptile" target="_blank" rel="noopener"><svg viewBox="0 0 12 14" width="14" height="16" fill="currentColor"><path d="M1 0v14h3V7.5L8.5 14H12L6.5 7 12 0H8.5L4 6.5V0H1z"/></svg><span>Kick</span> <span class="live-badge" data-service="kick"></span></a></li>
+      <li><a href="https://discord.gg/9vWQvTC7gr" target="_blank" rel="noopener"><svg viewBox="0 0 71 55" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M60.1 4.9C55.58 2.82 50.73 1.29 45.65.42a.5.5 0 0 0-.23.11c-.62 1.1-1.31 2.56-1.8 3.7a54.4 54.4 0 0 0-10.95 0 40 40 0 0 0-1.8-3.7.5.5 0 0 0-.23-.1A37.63 37.63 0 0 0 10.92 4.9a.5.5 0 0 0-.09.08C1.62 18.1-.8 30.86.35 43.44a.5.5 0 0 0 .1.19c5.44 4.2 10.74 6.72 15.95 8.37a.5.5 0 0 0 .26-.07 37.5 37.5 0 0 0 3.5-5.33.5.5 0 0 0-.13-.32c-1.66-.62-3.25-1.37-4.79-2.24a.5.5 0 0 1-.01-.86c.33-.23.66-.47.98-.72a.5.5 0 0 1 .25-.02 37 37 0 0 0 27.63 0 .5.5 0 0 1 .25.01c.33.25.65.5.98.72a.5.5 0 0 1-.02.86c-1.54.88-3.13 1.63-4.79 2.25a.5.5 0 0 0-.12.32c1 1.86 2.16 3.62 3.46 5.24a.5.5 0 0 0 .26.08c5.2-1.65 10.5-4.18 15.95-8.37a.5.5 0 0 0 .1-.2c1.36-14.37-2.2-27.01-8.91-38.45a.5.5 0 0 0-.1-.09zM24 36.58c-3.54 0-6.45-3.31-6.45-7.4 0-4.08 2.77-7.39 6.45-7.39s6.46 3.33 6.33 7.4c0 4.08-2.84 7.39-6.33 7.39zm23.09 0c-3.54 0-6.45-3.31-6.45-7.4 0-4.08 2.77-7.39 6.45-7.39s6.46 3.33 6.33 7.4c0 4.08-2.84 7.39-6.33 7.39z"/></svg><span>Discord</span></a></li>
+      <li><a href="https://www.youtube.com/@FullMetalReptile" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span>YouTube</span> <span class="live-badge" data-service="youtube"></span></a></li>
+      <li><a href="https://www.twitch.tv/fullmetalreptile" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.428l-3 3v-3H6.857V1.714h13.714Z"/></svg><span>Twitch</span> <span class="live-badge" data-service="twitch"></span></a></li>
+      <li><a href="https://kick.com/full-metal-reptile" target="_blank" rel="noopener"><svg viewBox="0 0 12 14" width="14" height="16" fill="currentColor" aria-hidden="true"><path d="M1 0v14h3V7.5L8.5 14H12L6.5 7 12 0H8.5L4 6.5V0H1z"/></svg><span>Kick</span> <span class="live-badge" data-service="kick"></span></a></li>
     </ul>
   </header>
 
   <div class="viewer" id="viewer">
-    <button class="arrow arrow-left" id="arrowLeft"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
+    <button class="arrow arrow-left" id="arrowLeft" aria-label="Previous stream" type="button"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
     <div class="viewer-content" id="viewerContent">
       <div class="viewer-placeholder">
-        <img src="logo.webp" alt="" class="viewer-logo" width="1024" height="1024">
+        <img src="logo.webp" alt="" class="viewer-logo" width="400" height="400">
       </div>
     </div>
-    <button class="arrow arrow-right" id="arrowRight"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
+    <button class="arrow arrow-right" id="arrowRight" aria-label="Next stream" type="button"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
     <div class="viewer-label" id="viewerLabel"></div>
   </div>
 
