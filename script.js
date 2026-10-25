@@ -9,13 +9,23 @@ try {
 const isMobile = /Mobi|Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 900;
 if (isMobile) document.documentElement.classList.add('mobile');
 
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const viewerStage = document.getElementById('viewerStage');
+const viewerFrame = document.getElementById('viewerFrame');
 const viewerContent = document.getElementById('viewerContent');
 const viewerLabel = document.getElementById('viewerLabel');
+const viewerCounter = document.getElementById('viewerCounter');
+const viewerDots = document.getElementById('viewerDots');
+const viewerLoader = document.getElementById('viewerLoader');
+const liveBanner = document.getElementById('liveBanner');
+const autoToggle = document.getElementById('autoToggle');
 const arrowLeft = document.getElementById('arrowLeft');
 const arrowRight = document.getElementById('arrowRight');
 
 let slides = [];
 let currentSlide = 0;
+let loaderTimer = null;
 
 const cache = {
   get(key) {
@@ -95,23 +105,62 @@ function createIframe(parent, src) {
   return iframe;
 }
 
+function showLoader(show) {
+  if (loaderTimer) { clearTimeout(loaderTimer); loaderTimer = null; }
+  if (show) {
+    // Only show loader if the embed takes a moment to boot
+    loaderTimer = setTimeout(() => { viewerLoader.hidden = false; }, 350);
+  } else {
+    viewerLoader.hidden = true;
+  }
+}
+
+function isLiveSlide(slide) {
+  return slide && (slide.type === 'twitch' || slide.label === 'Kick Live');
+}
+
+function renderDots() {
+  viewerDots.innerHTML = '';
+  if (slides.length <= 1) { viewerDots.hidden = true; return; }
+  viewerDots.hidden = false;
+  slides.forEach((s, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === currentSlide ? ' active' : '');
+    dot.type = 'button';
+    dot.setAttribute('role', 'tab');
+    dot.setAttribute('aria-selected', i === currentSlide ? 'true' : 'false');
+    dot.setAttribute('aria-label', `Go to slide ${i + 1}: ${s.label}`);
+    dot.addEventListener('click', () => { currentSlide = i; renderSlide(i); resetAutoTimer(); });
+    viewerDots.appendChild(dot);
+  });
+}
+
 function renderSlide(index) {
   const slide = slides[index];
+  viewerFrame.classList.toggle('is-live', isLiveSlide(slide));
+  liveBanner.hidden = !isLiveSlide(slide);
+
   if (!slide) {
     viewerContent.innerHTML = '<div class="viewer-placeholder"><img src="logo.webp" alt="" class="viewer-logo" width="400" height="400"></div>';
-    viewerLabel.textContent = '';
+    viewerLabel.textContent = 'ALL SYSTEMS OFFLINE';
+    viewerCounter.textContent = '-- / --';
     arrowLeft.style.display = 'none';
     arrowRight.style.display = 'none';
     arrowLeft.setAttribute('aria-hidden', 'true');
     arrowRight.setAttribute('aria-hidden', 'true');
+    viewerDots.hidden = true;
     return;
   }
+
   arrowLeft.style.display = index === 0 ? 'none' : '';
   arrowRight.style.display = index === slides.length - 1 ? 'none' : '';
   arrowLeft.setAttribute('aria-hidden', index === 0 ? 'true' : 'false');
   arrowRight.setAttribute('aria-hidden', index === slides.length - 1 ? 'true' : 'false');
+
   viewerLabel.textContent = slide.label;
+  viewerCounter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
   viewerContent.innerHTML = '';
+  showLoader(true);
 
   if (slide.type === 'youtube') {
     createIframe(viewerContent, `https://www.youtube.com/embed/${slide.id}?autoplay=1&mute=1`);
@@ -120,28 +169,96 @@ function renderSlide(index) {
   } else if (slide.type === 'twitch-vod') {
     createIframe(viewerContent, `https://player.twitch.tv/?video=${slide.id}&parent=${TWITCH_PARENTS}&autoplay=true&muted=true`);
   } else if (slide.type === 'link') {
-    viewerContent.innerHTML = `<div class="viewer-placeholder" style="flex-direction:column;gap:20px"><img src="logo.webp" alt="" class="viewer-logo" style="opacity:0.4" width="400" height="400"><a href="${slide.url}" target="_blank" rel="noopener" style="color:#00d4ff;font-size:18px;text-transform:uppercase;letter-spacing:2px;border:1px solid rgba(0,212,255,0.3);padding:14px 32px;border-radius:8px;text-decoration:none">Watch on ${slide.label}</a></div>`;
+    showLoader(false);
+    viewerContent.innerHTML = `<div class="viewer-card kick viewer-placeholder"><img src="logo.webp" alt="" class="viewer-logo" style="opacity:0.4" width="400" height="400"><a class="card-cta" href="${slide.url}" target="_blank" rel="noopener">Watch on ${slide.label}</a></div>`;
+  }
+
+  if (!reducedMotion) {
+    viewerContent.classList.remove('slide-in');
+    void viewerContent.offsetWidth;
+    viewerContent.classList.add('slide-in');
+  }
+
+  // Hide loader after a grace period (embeds give no reliable load event cross-origin)
+  showLoader(false);
+
+  renderDots();
+}
+
+function next(delta) {
+  if (slides.length === 0) return;
+  currentSlide = (currentSlide + delta + slides.length) % slides.length;
+  renderSlide(currentSlide);
+}
+
+arrowLeft.addEventListener('click', () => { next(-1); resetAutoTimer(); });
+arrowRight.addEventListener('click', () => { next(1); resetAutoTimer(); });
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') { next(-1); resetAutoTimer(); }
+  if (e.key === 'ArrowRight') { next(1); resetAutoTimer(); }
+});
+
+// --- Touch / swipe navigation ---
+let touchStartX = null;
+let touchStartY = null;
+
+viewerStage.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+viewerStage.addEventListener('touchend', e => {
+  if (touchStartX === null) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  touchStartX = touchStartY = null;
+  if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+  if (!reducedMotion && viewerStage.classList) {
+    const cls = dx < 0 ? 'nudge-right' : 'nudge-left';
+    viewerStage.classList.remove('nudge-left', 'nudge-right');
+    void viewerStage.offsetWidth;
+    viewerStage.classList.add(cls);
+    setTimeout(() => viewerStage.classList.remove(cls), 300);
+  }
+  next(dx < 0 ? 1 : -1);
+  resetAutoTimer();
+}, { passive: true });
+
+// --- Auto-advance ---
+const AUTO_INTERVAL = 20000;
+let autoOn = false;
+let autoTimer = null;
+
+try {
+  autoOn = localStorage.getItem('fmr_auto') === '1';
+} catch {}
+
+function applyAutoState() {
+  autoToggle.classList.toggle('on', autoOn);
+  autoToggle.setAttribute('aria-pressed', autoOn ? 'true' : 'false');
+  if (autoOn) {
+    autoTimer = setInterval(() => next(1), AUTO_INTERVAL);
+  } else if (autoTimer) {
+    clearInterval(autoTimer);
+    autoTimer = null;
   }
 }
 
-arrowLeft.addEventListener('click', () => {
-  if (slides.length === 0) return;
-  currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-  renderSlide(currentSlide);
+function resetAutoTimer() {
+  if (autoOn) {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(() => next(1), AUTO_INTERVAL);
+  }
+}
+
+autoToggle.addEventListener('click', () => {
+  autoOn = !autoOn;
+  try { localStorage.setItem('fmr_auto', autoOn ? '1' : '0'); } catch {}
+  applyAutoState();
 });
 
-arrowRight.addEventListener('click', () => {
-  if (slides.length === 0) return;
-  currentSlide = (currentSlide + 1) % slides.length;
-  renderSlide(currentSlide);
-});
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft') arrowLeft.click();
-  if (e.key === 'ArrowRight') arrowRight.click();
-});
-
-// Show LIVE badge on EVERY currently live service (not just one random)
+// --- LIVE badges ---
 function updateBadges(twitchLive, kickLive) {
   document.querySelectorAll('.live-badge').forEach(b => {
     const service = b.dataset.service;
@@ -169,7 +286,8 @@ function buildSlidesFrom(results) {
   if (results.kickLive) newSlides.push({ type: 'link', url: 'https://kick.com/full-metal-reptile', label: 'Kick Live' });
 
   const newKey = newSlides.map(s => s.type + ':' + (s.id || s.url)).join('|');
-  if (newKey === lastSlidesKey) return;
+  // Empty key check: first run must always render (incl. offline state)
+  if (newKey === lastSlidesKey && lastSlidesKey !== '') return;
   lastSlidesKey = newKey;
 
   slides = newSlides;
@@ -225,6 +343,18 @@ async function fetchAll() {
   updateBadges(results.twitchLive, results.kickLive);
 }
 
-// Immediate fetch, then poll every 30s
+// --- Ambient logo glitch (mecha flavor, skipped for reduced motion) ---
+if (!reducedMotion) {
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    setInterval(() => {
+      logo.classList.add('glitching');
+      setTimeout(() => logo.classList.remove('glitching'), 400);
+    }, 9000);
+  }
+}
+
+// Init
+applyAutoState();
 fetchAll();
 setInterval(fetchAll, 30000);
