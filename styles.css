@@ -568,6 +568,12 @@ header::after {
 /* ------------------------------------------------------------
    RESPONSIVE
    ------------------------------------------------------------ */
+/* six social links: drop the text labels before they crowd the logo */
+@media (max-width: 1400px) {
+  .nav-right { gap: 18px; }
+  .nav-right a > span:not(.live-badge) { display: none; }
+}
+
 @media (max-width: 768px) {
   .nav-right a span { display: none; }
   .arrow { width: 40px; height: 40px; }
