@@ -65,9 +65,15 @@ const API = {
 };
 
 const YT_CHANNEL_ID = 'UCH0pZ3TvrJiA51F_jzArXNA';
-// The channel's uploads playlist (UC… → UU…), newest first: YouTube's player always opens on the latest upload,
-// so no lookup is needed (rss2json served a stale copy of the feed and missed new uploads for an hour or more)
+// Fallback when DecAPI can't be reached: the channel's uploads playlist (UC… → UU…), newest first. Its player says
+// "This video is unavailable" to viewers signed in to Google, so the single-video embed is the normal path.
 const YT_UPLOADS = 'UU' + YT_CHANNEL_ID.slice(2);
+
+function extractYouTubeId(text) {
+  if (!text) return null;
+  const m = text.match(/(?:v=|youtu\.be\/|\/embed\/)([\w-]{11})/);
+  return m ? m[1] : null;
+}
 
 function extractTwitchVodId(url) {
   if (!url) return null;
@@ -158,6 +164,8 @@ function renderSlide(index) {
   showLoader(true);
 
   if (slide.type === 'youtube') {
+    createIframe(viewerContent, `https://www.youtube.com/embed/${slide.id}?autoplay=1&mute=1`);
+  } else if (slide.type === 'youtube-uploads') {
     createIframe(viewerContent, `https://www.youtube.com/embed/videoseries?list=${slide.id}&autoplay=1&mute=1`);
   } else if (slide.type === 'twitch') {
     createIframe(viewerContent, `https://player.twitch.tv/?channel=fullmetalreptile&parent=${TWITCH_PARENTS}&autoplay=true&muted=true`);
@@ -278,7 +286,9 @@ function buildSlidesFrom(results) {
   // A live stream is the newest thing, so it comes first while it's on
   if (results.twitchLive) newSlides.push({ type: 'twitch', id: 'channel=fullmetalreptile', label: 'Twitch Live' });
   if (results.kickLive) newSlides.push({ type: 'link', url: 'https://kick.com/full-metal-reptile', label: 'Kick Live' });
-  newSlides.push({ type: 'youtube', id: YT_UPLOADS, label: 'Latest YouTube Video' });
+  newSlides.push(results.ytVideoId
+    ? { type: 'youtube', id: results.ytVideoId, label: 'Latest YouTube Video' }
+    : { type: 'youtube-uploads', id: YT_UPLOADS, label: 'Latest YouTube Video' });
   if (!results.twitchLive && results.twitchVodId) newSlides.push({ type: 'twitch-vod', id: results.twitchVodId, label: 'Latest Twitch VOD' });
 
   const newKey = newSlides.map(s => s.type + ':' + (s.id || s.url)).join('|');
@@ -296,9 +306,17 @@ function buildSlidesFrom(results) {
 }
 
 async function fetchAll() {
-  const results = { twitchLive: false, twitchVodId: null, kickLive: false };
+  const results = { ytVideoId: null, twitchLive: false, twitchVodId: null, kickLive: false };
 
   const fetches = [];
+
+  // YouTube latest upload: DecAPI answers "Title - https://youtu.be/<id>" straight from YouTube (uncached, CORS-friendly).
+  // rss2json was dropped: it served a stale copy of the feed and missed new uploads for an hour or more.
+  fetches.push(
+    API.text(`https://decapi.me/youtube/latest_video?id=${YT_CHANNEL_ID}`, 'yt_latest', 60000).then(t => {
+      results.ytVideoId = extractYouTubeId(t);
+    }).catch(() => {})
+  );
 
   // Twitch live status – short cache (20s) so it stays reasonably fresh
   fetches.push(
