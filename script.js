@@ -65,14 +65,9 @@ const API = {
 };
 
 const YT_CHANNEL_ID = 'UCH0pZ3TvrJiA51F_jzArXNA';
-const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
-const YT_RSS = encodeURIComponent(`https://www.youtube.com/feeds/videos.xml?channel_id=${YT_CHANNEL_ID}`);
-
-function extractYouTubeId(url) {
-  if (!url) return null;
-  const m = url.match(/(?:v=|youtu\.be\/|\/embed\/)([\w-]{11})/);
-  return m ? m[1] : null;
-}
+// The channel's uploads playlist (UC… → UU…), newest first: YouTube's player always opens on the latest upload,
+// so no lookup is needed (rss2json served a stale copy of the feed and missed new uploads for an hour or more)
+const YT_UPLOADS = 'UU' + YT_CHANNEL_ID.slice(2);
 
 function extractTwitchVodId(url) {
   if (!url) return null;
@@ -163,7 +158,7 @@ function renderSlide(index) {
   showLoader(true);
 
   if (slide.type === 'youtube') {
-    createIframe(viewerContent, `https://www.youtube.com/embed/${slide.id}?autoplay=1&mute=1`);
+    createIframe(viewerContent, `https://www.youtube.com/embed/videoseries?list=${slide.id}&autoplay=1&mute=1`);
   } else if (slide.type === 'twitch') {
     createIframe(viewerContent, `https://player.twitch.tv/?channel=fullmetalreptile&parent=${TWITCH_PARENTS}&autoplay=true&muted=true`);
   } else if (slide.type === 'twitch-vod') {
@@ -280,10 +275,11 @@ let lastSlidesKey = '';
 
 function buildSlidesFrom(results) {
   const newSlides = [];
-  if (results.ytVideoId) newSlides.push({ type: 'youtube', id: results.ytVideoId, label: 'Latest YouTube Video' });
+  // A live stream is the newest thing, so it comes first while it's on
   if (results.twitchLive) newSlides.push({ type: 'twitch', id: 'channel=fullmetalreptile', label: 'Twitch Live' });
-  else if (results.twitchVodId) newSlides.push({ type: 'twitch-vod', id: results.twitchVodId, label: 'Latest Twitch VOD' });
   if (results.kickLive) newSlides.push({ type: 'link', url: 'https://kick.com/full-metal-reptile', label: 'Kick Live' });
+  newSlides.push({ type: 'youtube', id: YT_UPLOADS, label: 'Latest YouTube Video' });
+  if (!results.twitchLive && results.twitchVodId) newSlides.push({ type: 'twitch-vod', id: results.twitchVodId, label: 'Latest Twitch VOD' });
 
   const newKey = newSlides.map(s => s.type + ':' + (s.id || s.url)).join('|');
   // Empty key check: first run must always render (incl. offline state)
@@ -300,19 +296,9 @@ function buildSlidesFrom(results) {
 }
 
 async function fetchAll() {
-  const results = { ytVideoId: null, twitchLive: false, twitchVodId: null, kickLive: false };
+  const results = { twitchLive: false, twitchVodId: null, kickLive: false };
 
   const fetches = [];
-
-  // YouTube latest video via rss2json (CORS-friendly RSS-to-JSON)
-  // Cache 5 minutes
-  fetches.push(
-    API.json(RSS2JSON + YT_RSS, 'yt_rss', 300000).then(d => {
-      if (d && d.items && d.items.length > 0) {
-        results.ytVideoId = extractYouTubeId(d.items[0].link);
-      }
-    }).catch(() => {})
-  );
 
   // Twitch live status – short cache (20s) so it stays reasonably fresh
   fetches.push(
