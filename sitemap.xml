@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url>
     <loc>https://fullmetalreptile.com/</loc>
     <lastmod>2026-10-28</lastmod>
   </url>
   <url>
     <loc>https://fullmetalreptile.com/from-dust-we-came/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-02</lastmod>
+    <video:video>
+      <video:thumbnail_loc>https://i.ytimg.com/vi/dNgE8xQmhI0/maxresdefault.jpg</video:thumbnail_loc>
+      <video:title>From Dust We Came | Trailer</video:title>
+      <video:description>The official trailer for From Dust We Came (FDWC), a free-to-play multiplayer FPS by Full Metal Reptile where the map is brand new every match.</video:description>
+      <video:player_loc>https://www.youtube.com/embed/dNgE8xQmhI0</video:player_loc>
+      <video:duration>108</video:duration>
+      <video:publication_date>2026-11-02T21:41:27+00:00</video:publication_date>
+    </video:video>
   </url>
 </urlset>

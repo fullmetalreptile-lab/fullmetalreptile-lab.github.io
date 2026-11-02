@@ -50,12 +50,25 @@
         "author": { "@id": "https://fullmetalreptile.com/#org" },
         "publisher": { "@type": "Organization", "name": "Grudge Studio" },
         "sameAs": ["https://store.steampowered.com/app/5447690/"],
+        "trailer": { "@id": "https://fullmetalreptile.com/from-dust-we-came/#trailer" },
         "offers": {
           "@type": "Offer",
           "url": "https://store.steampowered.com/app/5447690/",
           "availability": "https://schema.org/PreOrder",
           "category": "Free playtest"
         }
+      },
+      {
+        "@type": "VideoObject",
+        "@id": "https://fullmetalreptile.com/from-dust-we-came/#trailer",
+        "name": "From Dust We Came | Trailer",
+        "description": "The official trailer for From Dust We Came (FDWC), a free-to-play multiplayer FPS by Full Metal Reptile where the map is brand new every match. PvP, co-op missions against machine hordes, clans.",
+        "thumbnailUrl": ["https://i.ytimg.com/vi/dNgE8xQmhI0/maxresdefault.jpg", "https://i.ytimg.com/vi/dNgE8xQmhI0/hqdefault.jpg"],
+        "uploadDate": "2026-11-02T21:41:27+00:00",
+        "duration": "PT1M48S",
+        "embedUrl": "https://www.youtube.com/embed/dNgE8xQmhI0",
+        "url": "https://www.youtube.com/watch?v=dNgE8xQmhI0",
+        "publisher": { "@id": "https://fullmetalreptile.com/#org" }
       },
       {
         "@type": "Organization",
@@ -128,6 +141,8 @@
     .card p { color:var(--dim); font-size:15px; }
     ol.steps { padding-left:22px; color:#c9eefb; }
     ol.steps li { margin-bottom:8px; }
+    .trailer { border:1px solid rgba(0,212,255,.35); background:var(--panel); padding:6px; }
+    .trailer iframe { display:block; width:100%; height:auto; aspect-ratio:16/9; border:0; }
     .widget { margin-top:18px; max-width:646px; }
     .widget iframe { width:100%; height:190px; border:0; }
     dl dt { color:#eaffff; font-weight:700; margin-top:14px; }
@@ -140,6 +155,7 @@
   <nav aria-label="Main">
     <a class="brand" href="/"><img src="/icon-192.png" alt="" width="40" height="40">Full Metal Reptile</a>
     <div class="links">
+      <a href="#trailer">Trailer</a>
       <a href="#about">About</a>
       <a href="#playtest">Playtest</a>
       <a href="#faq">FAQ</a>
@@ -163,6 +179,13 @@
         <img src="/from-dust-we-came/fdwc-header.jpg" alt="From Dust We Came key art" width="920" height="430" fetchpriority="high">
       </div>
     </header>
+
+    <section id="trailer" aria-labelledby="trailer-h">
+      <h2 id="trailer-h">From Dust We Came trailer</h2>
+      <div class="trailer">
+        <iframe src="https://www.youtube.com/embed/dNgE8xQmhI0" title="From Dust We Came | Trailer" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </section>
 
     <section id="about" aria-labelledby="about-h">
       <h2 id="about-h">About From Dust We Came</h2>
